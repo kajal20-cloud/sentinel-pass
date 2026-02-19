@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelPass | Security Lab</title>
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: var(--card); padding: 2rem; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); width: 380px; border: 1px solid #334155; }
+        .input-group { position: relative; margin-top: 15px; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; font-size: 1rem; }
+        .toggle-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .strength-bar { height: 6px; width: 0%; border-radius: 10px; transition: 0.4s ease; margin-top: 20px; background: #475569; }
+        .weak { width: 33%; background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        .medium { width: 66%; background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
+        .strong { width: 100%; background: #10b981; box-shadow: 0 0 10px #10b981; }
+        #status { font-weight: bold; margin-top: 10px; font-size: 0.9rem; }
+        .hint { font-size: 0.75rem; color: #94a3b8; margin-top: 20px; border-top: 1px solid #334155; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="margin:0; color: var(--accent);">🛡️ SentinelPass</h2>
+    <p style="font-size: 0.85rem; color: #94a3b8;">1st Year Cloud Security Project</p>
+    
+    <div class="input-group">
+        <input type="password" id="pw" placeholder="Enter test password..." oninput="check()">
+        <button class="toggle-btn" onclick="toggleVisibility()" id="toggleTxt">SHOW</button>
+    </div>
+    
+    <div id="bar" class="strength-bar"></div>
+    <p id="status">Status: Awaiting Input</p>
+    
+    <div class="hint">
+        <strong>Security Criteria:</strong>
+        <ul style="margin: 5px 0; padding-left: 15px;">
+            <li>12+ Characters</li>
+            <li>Uppercase & Lowercase</li>
+            <li>Numbers & Special Symbols</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function toggleVisibility() {
+        const pwInput = document.getElementById('pw');
+        const btn = document.getElementById('toggleTxt');
+        if (pwInput.type === "password") {
+            pwInput.type = "text";
+            btn.innerText = "HIDE";
+        } else {
+            pwInput.type = "password";
+            btn.innerText = "SHOW";
+        }
+    }
+
+    function check() {
+        const val = document.getElementById('pw').value;
+        const bar = document.getElementById('bar');
+        const status = document.getElementById('status');
+        let score = 0;
+
+        if (val.length >= 12) score++;
+        if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        bar.className = "strength-bar";
+        if (val.length === 0) { 
+            status.innerText = "Status: Awaiting Input"; 
+            status.style.color = "#94a3b8";
+        } else if (score < 2) { 
+            bar.classList.add('weak'); 
+            status.innerText = "Status: WEAK (High Risk)"; 
+            status.style.color = "#ef4444";
+        } else if (score < 4) { 
+            bar.classList.add('medium'); 
+            status.innerText = "Status: MODERATE"; 
+            status.style.color = "#f59e0b";
+        } else { 
+            bar.classList.add('strong'); 
+            status.innerText = "Status: SECURE (Cloud Ready)"; 
+            status.style.color = "#10b981";
+        }
+    }
+</script>
+
+</body>
+</html>
